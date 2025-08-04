@@ -1,0 +1,45 @@
+.selection{
+    background-color: rgba(255,255,255,0.1);
+    width: 100px;
+    height: 150px;
+}
+.toolstable{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    opacity: 0.7;
+}
+.dotterlines{
+    border: 2px dashed white;
+    width: 30px;
+    height: 30px;
+}
+.toolstd{
+    border-right: 2px solid rgba(255,255,255,0.3);
+}
+.center{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: row;
+}
+.centercolumn{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+}
+.lowtop{
+    margin-top: -1px;
+    margin-bottom: -10px;
+}
+.picturetools{
+    width: 200px;
+    height: 150px;
+}
+.picturerows svg{
+    color: red;
+    
+
+}

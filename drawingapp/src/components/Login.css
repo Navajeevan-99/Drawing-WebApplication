@@ -1,0 +1,30 @@
+.loginborder{
+    background-color: #666666;
+    border: 2px solid black;
+    width: 300px;
+    height: 150px;
+    margin-top: auto;
+    margin-bottom: auto;
+    margin-left: auto;
+    margin-right: auto;
+}
+.centerparentcolumn{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+.centerparentrow{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.form{
+    height: 100px;
+    width: 300px;
+}
+.buttoncolumn{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}

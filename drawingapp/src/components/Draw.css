@@ -1,0 +1,111 @@
+.selection{
+    background-color: rgba(255,255,255,0.1);
+    width: 100px;
+    height: 150px;
+}
+.selection:hover{
+    color: violet;
+}
+.dotterlines:hover{
+    border-color: violet;
+    width: 35px;
+    height: 35px;
+}
+.toolstable{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    opacity: 0.7;
+}
+.dotterlines{
+    border: 2px dashed white;
+    width: 30px;
+    height: 30px;
+}
+.toolstd{
+    border-right: 2px solid rgba(255,255,255,0.3);
+}
+.center{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: row;
+}
+.centercolumn{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+}
+.lowtop{
+    margin-top: -1px;
+    margin-bottom: -10px;
+}
+.picturetools{
+    width: 200px;
+    height: 150px;
+    background-color: rgba(255,255,255,0.1);
+}
+.picturesrow svg{
+    width: 30px;
+    height: 30px;
+    margin: 10px;
+}
+.picturesrow svg:hover{
+    width: 40px;
+    height: 40px;
+    color: violet;
+}
+.paintchooseb{
+    width: 300px;
+    height: 150px;
+     background-color: rgba(255,255,255,0.1);
+}
+.shapeslist{
+    width: 180px;
+    height: 130px;
+}
+.shapesb{
+    width: 200px;
+    height: 150px;
+    background-color: rgba(255,255,255,0.1);
+}
+.shapesb svg{
+    width: 30px;
+    height: 30px;
+    color: white;
+    margin: 5px;
+}
+.shapesb svg:hover{
+    width: 35px;
+    height: 35px;
+    color: violet;
+}
+.selectpvf{
+    width: 75px;
+    height: 150px;
+    background-color: rgba(255,255,255,0.1);
+}
+.selectpvf svg{
+    width: 30px;
+    height: 30px;
+    color: white;
+    margin: 5px;
+}
+.selectpvf svg:hover{
+    width: 35px;
+    height: 35px;
+    color: violet;
+}
+button{
+    background-color: rgba(255,255,255,0.0);
+    border: none;
+
+}
+.page{
+    margin-top: 50px;
+    background-color: white;
+    width: 1000px;
+    height: 345px;
+}

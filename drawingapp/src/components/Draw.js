@@ -87,7 +87,13 @@ const Draw=()=>{
                     </div>
 
                 </td>
+                 <td className='toolstd textc'>
+                    <h3 style={{textDecoration: "underline"}}>T</h3>
+                    
+                    
+                </td>
             </tr>
+           
         </tbody>
         </table>
         <div className='page'>

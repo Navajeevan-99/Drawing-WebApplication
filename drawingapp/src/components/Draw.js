@@ -57,7 +57,7 @@ const Draw=()=>{
 
                 </td>
                 <td className='toolstd shapesb center'>
-                    <div className='shapeslist' >
+                    <div className='shapeslist' style={{marginLeft:"20px"}}>
                         
                         <button title="Line"><BsDash /></button>
                         <button title="Rectangle"><FaRegSquare /></button>
@@ -88,7 +88,29 @@ const Draw=()=>{
 
                 </td>
                  <td className='toolstd textc'>
-                    <h3 style={{textDecoration: "underline"}}>T</h3>
+                    <div className='centercolumn textelementsblock'>
+                   
+                    <h3 style={{textDecoration: "underline",border:"2px dashed white",width:"30px",height:"30px",paddingLeft:"10px",marginBottom:"10px",marginTop:"0px"}}>T</h3>
+                    <div className='textsizeblock' style={{marginBottom:"10px"}}>
+                    <input type='number' style={{width: "30px",backgroundColor:"rgba(255,255,255,0.0)",border:"none",borderBottom:"2px solid rgba(255,255,255,0.5)",color:"white",marginLeft:"10px"}} className='tsiblock'/>
+                    <select name='textsize' style={{backgroundColor:"rgba(255,255,255,0.0)",border:"none",color:"white"}}>
+                        <option>2pt</option>
+                        <option>4pt</option>
+                        <option>8pt</option>
+                        <option>16pt</option>
+                        <option>32pt</option>
+                        <option>64pt</option>
+                    </select>
+                    </div>
+                    <select name='font' style={{backgroundColor:"rgba(255,255,255,0.0)",border:"none",color:"white"}}>
+                        <option>Times New Roman</option>
+                        <option>Sans Serif</option>
+                        <option>Arial</option>
+                        <option>Futura</option>
+                        <option>Garmond</option>
+                        <option>Verdana</option>
+                    </select>
+                    </div>
                     
                     
                 </td>

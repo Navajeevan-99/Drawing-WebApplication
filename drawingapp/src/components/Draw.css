@@ -110,9 +110,26 @@ button{
     height: 345px;
 }
 .textc{
-    width: 100px;
+    width: 150px;
     height: 150px;
     background-color: rgba(255,255,255,0.1);
     font-family: 'Times New Roman', Times, serif;
     font-size: 25px;
 }
+.textsizeblock{
+    background-color: rgba(255,255,255,0.0);
+    border: 2px solid rgba(255,255,255,0.3);
+    border-radius: 10px;
+   
+}
+.tsiblock:active{
+    border: none;
+}
+.textelementsblock{
+    width: 150px;
+    height: 150px;
+}
+option{
+    background-color: rgba(0,0,0,0.9);
+}
+

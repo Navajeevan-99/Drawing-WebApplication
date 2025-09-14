@@ -5,7 +5,7 @@ const Login=()=>{
     navigate=useNavigate()
     let [email,setemail]=useState('');
     let [password,setpassword]=useState('');
-   
+    let re='red';
     const changeEmail=(e)=>{
         setemail(e.target.value);
     }
@@ -23,7 +23,7 @@ return(
     <>
     <div className="loginborder">
         <form className='centerparentcolumn form'>
-            <table className='table'>
+            <table className='table' style={{color:{re}}}>
                 <tbody>
                    
                     <tr>

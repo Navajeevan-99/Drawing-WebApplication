@@ -8,12 +8,16 @@ import { TbPointFilled, TbLine, TbSquare } from 'react-icons/tb';
 import { BsTriangle, BsDash, BsHexagon, BsDiamond } from 'react-icons/bs';
 
 import {SketchPicker,CirclePicker} from 'react-color';
+import ReactDOMServer from 'react-dom/server'
 const Draw=()=>{
     const [color, setColor] = useState('#f44336');
     const paletteColors = [
     '#000000', '#808080', '#D32F2F', '#FF4081', '#FF5722', '#FFC107',
     '#FFFFFF', '#C8C8C8', '#7B1FA2', '#536DFE', '#FFEB3B', '#4CAF50'
   ];
+  const test=()=>{
+    console.log(ReactDOMServer.renderToStaticMarkup(ReactDOMServer.renderToStaticMarkup(<BsDash />)))
+  }
 
     return(
         <>
@@ -59,7 +63,7 @@ const Draw=()=>{
                 <td className='toolstd shapesb center'>
                     <div className='shapeslist' style={{marginLeft:"20px"}}>
                         
-                        <button title="Line"><BsDash /></button>
+                        <button title="Line" onClick={test}><BsDash /></button>
                         <button title="Rectangle"><FaRegSquare /></button>
                         <button title="Circle"><FaRegCircle /></button>
                         <button title="Triangle"><BsTriangle /></button>

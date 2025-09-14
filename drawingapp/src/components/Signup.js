@@ -2,7 +2,9 @@ import { useState } from 'react';
 import './Signup.css';
 import {useNavigate} from 'react-router-dom';
 import axios from 'axios';
+
 const Signup=()=>{
+    let re='red';
     let navigate=useNavigate();
     let [name,setname]=useState('');
     let [email,setemail]=useState('');
@@ -31,7 +33,7 @@ return(
             <table className='table'>
                 <tbody>
                     <tr>
-                        <td>Name</td><td>:</td><td><input type='text' value={name} onChange={changeName}/></td>
+                        <td style={{backgroundColor:re,color:'white'}}>Name</td><td>:</td><td><input type='text' value={name} onChange={changeName}/></td>
                     </tr>
                     <tr>
                         <td>Email</td><td>:</td><td><input type='email' value={email} onChange={changeEmail}/></td>

@@ -1,0 +1,8 @@
+.loginform{
+    width: 400px;
+    height: 400px;
+    background-color: rgba(0, 0, 255, 0.1);
+    color: white;
+    font-weight: bold;
+    border-radius: 30px;  
+}

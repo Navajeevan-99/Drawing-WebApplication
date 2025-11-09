@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import './Login.css'
 import {useNavigate} from 'react-router-dom'
+
 const Login=()=>{
     navigate=useNavigate()
     let [email,setemail]=useState('');
@@ -13,7 +14,6 @@ const Login=()=>{
         setpassword(e.target.value);
     }
     const Loginclick=()=>{
-      
        
         navigate(`/Landing/`);
         alert('Login successfully');

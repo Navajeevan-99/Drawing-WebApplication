@@ -1,0 +1,30 @@
+.admin{
+    color: white;}
+.adminpage{
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+}
+.atable,.atable td{
+    border: 3px solid white;
+    border-collapse: collapse;
+}
+.cn{
+    text-align: center;
+    width: 200px;
+    height: 50px;
+
+    
+}
+.newusertable{
+    border: 2px solid white;
+    border-radius: 10px;
+    width: 250px;
+    height: 150px;
+    margin-top: 20px;
+}
+
+

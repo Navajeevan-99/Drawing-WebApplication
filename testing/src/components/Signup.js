@@ -39,7 +39,21 @@ const Signup = () => {
             <td>Password</td><td>:</td><td ><input type='password' value={password} className='input' placeholder='Enter your password' onChange={changepassword}/></td>
         </tr>
         <tr>
-            <td colSpan={3}><button className='signupbutton' onClick={()=>{
+            <td colSpan={3}><button type='button' className='signupbutton' onClick={ async ()=>{
+                const res=await fetch('http://localhost:3003/api/user',{
+                    method: 'POST',
+                    headers:{
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({name: name,email: email,password: password})
+                })
+                const data=await res.json();
+            if (data.err){
+                alert(data.err);
+            }
+            else{
+                alert(data.user+' is created')
+            }
                 gotologin();
 
             }}>Sign Up</button></td><td></td><td></td>

@@ -16,6 +16,8 @@ const Draw=()=>{
     const [rect,setrect]=useState();
     const transformerRef=useRef();
     const [color, setColor] = useState('#f44336');
+    const [fmenu,setfmenu]=useState(false);
+    let isDrawingRef=useRef(false);
     let id=useRef(0);
     const paletteColors = [
     '#000000', '#808080', '#D32F2F', '#FF4081', '#FF5722', '#FFC107',
@@ -32,15 +34,25 @@ const Draw=()=>{
     })
     console.log(position)
   }
-  const addcircle=()=>{
-    id=id.current+1;
-    
-    const newcircle={x: 100,y:100,width: 100, height: 100,fill: color,id: id.current,shape: 'circle',stroke: 'black',strokeWidth: 2};
-    flushSync(()=>{
-      setposition([...position,newcircle]);
-    })
-    console.log(position)
-  }
+  const addcircle = () => {
+    id.current = id.current + 1;
+    const newcircle = {
+      x: 100,
+      y: 100,
+      radius: 50, // Use radius, NOT width/height
+      fill: color,
+      id: id.current,
+      shape: 'circle',
+      stroke: 'black',
+      strokeWidth: 2,
+      scaleX: 1,
+      scaleY: 1,
+      rotation: 0
+    };
+    flushSync(() => {
+      setposition([...position, newcircle]);
+    });
+  };
   const addtriangle=()=>{
     id=id.current+1;
     const newtriangle={ points:[100,300,200,100,300,300],x: 100,y:100,width: 100, height: 100,fill: color,id: id.current,shape: 'triangle',strokeWidth: 2,stroke: 'black',closed: true};
@@ -48,55 +60,89 @@ const Draw=()=>{
       setposition([...position,newtriangle]);
     })
   }
-  const addhexagon=()=>{
-    id=id.current+1;
-    const newhexagon={ x: 100,y:100,width: 100, height: 100,sides: 6,radius: 50,fill: color,id: id.current,shape: 'hexagon',strokeWidth: 2,stroke: 'black'};
-    flushSync(()=>{
-      setposition([...position,newhexagon]);
-    })
+ const addhexagon = () => {
+    id.current = id.current + 1;
+    const newhexagon = {
+      x: 100,
+      y: 100,
+      // Remove width/height, use radius for polygons
+      radius: 50, 
+      sides: 6,
+      fill: color,
+      id: id.current,
+      shape: 'hexagon',
+      strokeWidth: 2,
+      stroke: 'black',
+      rotation: 0,
+      scaleX: 1, // Initialize scale
+      scaleY: 1
+    };
+    flushSync(() => {
+      setposition([...position, newhexagon]);
+    });
+  };
 
-  }
-  const adddiamond=()=>{
-    id=id.current+1;
-    const newdiamond={ x: 100,y:100,width: 100, height: 100,sides: 4,radius: 50,fill: color,id: id.current,shape: 'diamond',strokeWidth: 2,stroke: 'black'};
-    flushSync(()=>{
-      setposition([...position,newdiamond]);
-    })
+  const adddiamond = () => {
+    id.current = id.current + 1;
+    const newdiamond = {
+      x: 100,
+      y: 100,
+      // Remove width/height, use radius
+      radius: 50,
+      sides: 4,
+      fill: color,
+      id: id.current,
+      shape: 'diamond',
+      strokeWidth: 2,
+      stroke: 'black',
+      rotation: 0,
+      scaleX: 1,
+      scaleY: 1
+    };
+    flushSync(() => {
+      setposition([...position, newdiamond]);
+    });
+  };
 
-  }
+  const addstar = () => {
+    id.current = id.current + 1;
+    const newstar = {
+      id: String(id.current),
+      shape: 'star',
+      x: 150,
+      y: 150,
+      numPoints: 5,
+      innerRadius: 20,
+      outerRadius: 50,
+      fill: color,
+      stroke: 'black',
+      strokeWidth: 2,
+      rotation: 0,
+      scaleX: 1,
+      scaleY: 1
+    };
+    flushSync(() => {
+      setposition([...position, newstar]);
+    });
+  };
+
   const addheart = () => {
-  id.current += 1;
-  const newheart = {
-    id: String(id.current),
-    shape: 'heart',
-    x: 200,
-    y: 200,
-    scale: 1,
-    fill: color,
-    stroke: 'black',
-    strokeWidth: 2,
+    id.current += 1;
+    const newheart = {
+      id: String(id.current),
+      shape: 'heart',
+      x: 200,
+      y: 200,
+      // FIX: Use scaleX and scaleY instead of 'scale'
+      scaleX: 1,
+      scaleY: 1,
+      fill: color,
+      stroke: 'black',
+      strokeWidth: 2,
+      rotation: 0,
+    };
+    flushSync(() => setposition((prev) => [...prev, newheart]));
   };
-  flushSync(() => setposition(prev => [...prev, newheart]));
-};
-  const addstar=()=>{
-    id=id.current+1;
-   const newstar = {
-    id: String(id.current),       
-    shape: 'star',
-    x: 150,
-    y: 150,
-    numPoints: 5,                  
-    innerRadius: 20,
-    outerRadius: 50,
-    fill: color,
-    stroke: 'black',
-    strokeWidth: 2
-  };
-    flushSync(()=>{
-      setposition([...position,newstar]);
-    })
-
-  }
   const handleselect=(e)=>{
    
     flushSync(
@@ -131,37 +177,136 @@ const Draw=()=>{
       console.log(rect);
     }
   },[isselect])
-   const transformend=(e)=>{
-    const node=rect;
-    let sx=node.scaleX();
-    let sy=node.scaleY();
-    let index=e.target.index-1;
-    flushSync(()=>{
-      node.scaleX(1);
-      node.scaleY(1);
-       setposition(position.map((rect, i) =>
-    i === index
-      ? {
-          ...rect,
-          x: node.x(),
-          y: node.y(),
-          width: Math.max(5, node.width() * sx),
-          height: Math.max(5, node.height() * sy)
-        }
-      : rect
-  ));
-    })
-    console.log(position);
-  }
+const transformend = (e) => {
+    const node = e.target;
+    const scaleX = node.scaleX();
+    const scaleY = node.scaleY();
+    
+    // Find the item in your state
+    const index = position.findIndex(p => String(p.id) === String(node.id()));
+
+    flushSync(() => {
+      setposition(
+        position.map((item, i) => {
+          if (i !== index) return item;
+
+          const newItem = {
+            ...item,
+            x: node.x(),
+            y: node.y(),
+            rotation: node.rotation(),
+          };
+
+          // --- GROUP 1: Shapes defined by Width/Height ---
+          if (item.shape === 'rectangle') {
+            newItem.width = Math.max(5, node.width() * scaleX);
+            newItem.height = Math.max(5, node.height() * scaleY);
+            // Reset node scale since we absorbed it into width/height
+            node.scaleX(1);
+            node.scaleY(1);
+          } 
+          
+          // --- GROUP 2: Shapes defined by Radius (Circle, Hexagon, Diamond) ---
+          else if (item.shape === 'circle' || item.shape === 'hexagon' || item.shape === 'diamond') {
+             // Calculate new radius based on scaleX (assuming uniform or taking max)
+             // Using max ensures it doesn't flatten if dragged diagonally
+             const maxScale = Math.max(Math.abs(scaleX), Math.abs(scaleY));
+             newItem.radius = Math.max(5, item.radius * maxScale);
+             
+             // Reset node scale
+             node.scaleX(1);
+             node.scaleY(1);
+          }
+
+          // --- GROUP 3: Star (Inner/Outer Radius) ---
+          else if (item.shape === 'star') {
+             const maxScale = Math.max(Math.abs(scaleX), Math.abs(scaleY));
+             newItem.outerRadius = Math.max(5, item.outerRadius * maxScale);
+             newItem.innerRadius = Math.max(2, item.innerRadius * maxScale);
+             
+             // Reset node scale
+             node.scaleX(1);
+             node.scaleY(1);
+          }
+
+          // --- GROUP 4: Lines/Triangles (Points) ---
+          else if (item.shape === 'triangle') {
+             newItem.points = item.points.map((point, idx) => {
+               return idx % 2 === 0 ? point * scaleX : point * scaleY;
+             });
+             node.scaleX(1);
+             node.scaleY(1);
+          }
+
+          // --- GROUP 5: Custom Shapes (Heart) ---
+          // For the heart, we DO NOT absorb the scale into geometry.
+          // We DO NOT reset the node.scaleX to 1.
+          // We simply save the new scale into state.
+          else if (item.shape === 'heart') {
+             newItem.scaleX = scaleX;
+             newItem.scaleY = scaleY;
+          }
+
+          return newItem;
+        })
+      );
+    });
+  };
   const colorchange=(e)=>{
     console.log(e);
 
   }
 
+  const openfmenu=()=>{
+    console.log('file')
+    if (fmenu===false){
+      setfmenu(true);
+    }
+    else{
+       setfmenu(false);
+    }
+
+  }
+  const newfile=()=>{
+
+  }
+  const openfile=()=>{
+
+  }
+  const savefile=()=>{
+
+  }
+  const saveasfile=()=>{
+
+  }
+  const exportasfile=()=>{
+
+  }
+  const handlemouseup=()=>{
+    isDrawingRef.current=true;
+
+  }
+  
+
     return(
         <>
         <div className='centercolumn'>
-        <p style={{color: 'white'}}>file</p>
+          <div className='menucontainer center'>
+        <button onClick={openfmenu} style={{color: 'white'}}>File</button>
+        </div>
+        {
+          fmenu && (
+            <div className='filemenucontainer centercolumn'>
+                <button style={{color: 'white'}} onClick={newfile}>New</button>
+                <button style={{color: 'white'}} onClick={openfile}>Open</button>
+                <button style={{color: 'white'}} onClick={savefile}>Save</button>
+                <button style={{color: 'white'}} onClick={saveasfile}>Save As</button>
+                <button style={{color: 'white',marginBottom: '20px'}} onClick={exportasfile}>Export As</button>
+              
+      
+            </div>
+        )
+        }
         <table className='toolstable'>
         <tbody>
             <tr>
@@ -265,7 +410,7 @@ const Draw=()=>{
         </tbody>
         </table>
         <div className='page'>
-            <Stage className='stage' width={1000} height={545} onClick={handledeselect} classNames='stage'>
+            <Stage className='stage' width={1000} height={545} onClick={handledeselect} classNames='stage' onMouseUp={handlemouseup}>
           <Layer>
             {/* <Rect
             x={position.x}
@@ -387,19 +532,12 @@ const Draw=()=>{
               }}
               )
             }
-             {
-              position.map((p,i)=>{
-                if (p.shape==='heart'){
-                return <Shape
+             {position.map((p, i) => {
+  if (p.shape === 'heart') {
+    return (
+      <Shape
         key={p.id}
-        x={p.x}
-        y={p.y}
-        fill={p.fill}
-        stroke={p.stroke}
-        strokeWidth={p.strokeWidth}
-        draggable
-        onClick={handleselect}
-        onTransformEnd={transformend}
+        {...p} // <--- Add this to ensure x, y, scaleX, scaleY, rotation are passed
         sceneFunc={(context, shape) => {
           context.beginPath();
           context.moveTo(0, 30);
@@ -408,10 +546,13 @@ const Draw=()=>{
           context.closePath();
           context.fillStrokeShape(shape);
         }}
+        draggable
+        onClick={handleselect}
+        onTransformEnd={transformend}
       />
-              }}
-              )
-            }
+    );
+  }
+})}
           </Layer>
 
         </Stage>

@@ -18,6 +18,7 @@ const Adminpage = (props) => {
       setusers(json);
     
     })
+    console.log(users)
   }
   )
   const deleteuser= async(e,name)=>{

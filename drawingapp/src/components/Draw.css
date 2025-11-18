@@ -132,4 +132,27 @@ button{
 option{
     background-color: rgba(0,0,0,0.9);
 }
+.filemenucontainer{
+    background-color: rgba(255,255,255,0.3);
+    width: 150px;
+
+    border-radius: 10px;
+    position: absolute;
+    left: 10px;
+    top: 50px;
+}
+.menucontainer{
+    position: absolute;
+    left: 10px;
+    top: 10px;
+    background-color: rgba(255,255,255,0.3);
+    border-radius: 10px;
+    height: 30px;
+
+}
+.filemenucontainer button{
+    border-bottom: 2px solid rgba(255,255,255,0.3);
+    margin-top: 20px;
+    width: 150px;
+}
 

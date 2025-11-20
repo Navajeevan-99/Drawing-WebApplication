@@ -155,4 +155,15 @@ option{
     margin-top: 20px;
     width: 150px;
 }
+.propertiesdiv{
+    width: 300px;
+    height: 700px;
+    top: 35px;
+    left: 1390px;
+    position: absolute;
+    background-color: rgba(70,70,70,1);
+    border-radius: 10px;
+    color: white;
 
+
+}

@@ -1,114 +1,184 @@
 import './Draw.css';
-import React, { useState,useEffect ,useRef} from 'react';
-import {FaPencilAlt,FaChevronDown,FaCropAlt,FaExpandArrowsAlt,FaMagic,FaPaintBrush,FaRegSquare, FaRegCircle, FaShapes
-    ,FaRegStar, FaRegHeart
- } from 'react-icons/fa';
+
+import React, { useState, useEffect, useRef } from 'react';
+import ReactDOMServer from 'react-dom/server';
+import { flushSync } from 'react-dom';
+
+import { SketchPicker, CirclePicker } from 'react-color';
+
+import {
+  FaPencilAlt,
+  FaChevronDown,
+  FaCropAlt,
+  FaExpandArrowsAlt,
+  FaMagic,
+  FaPaintBrush,
+  FaRegSquare,
+  FaRegCircle,
+  FaShapes,
+  FaRegStar,
+  FaRegHeart,
+} from 'react-icons/fa';
+
 import { MdRotateLeft, MdRotateRight } from 'react-icons/md';
 import { TbPointFilled, TbLine, TbSquare } from 'react-icons/tb';
 import { BsTriangle, BsDash, BsHexagon, BsDiamond } from 'react-icons/bs';
-import {Stage,Layer,Rect, Transformer,Circle,Line, RegularPolygon, Star,Shape} from 'react-konva'
-import {flushSync} from 'react-dom'
-import {SketchPicker,CirclePicker} from 'react-color';
-import ReactDOMServer from 'react-dom/server'
-const Draw=()=>{
-    const [position,setposition]=useState([])
-    const [isselect,setisselect]=useState(false);
-    const [rect,setrect]=useState();
-    const transformerRef=useRef();
-    const [color, setColor] = useState('#f44336');
-    const [fmenu,setfmenu]=useState(false);
-    let isDrawingRef=useRef(false);
-    let id=useRef(0);
-    const paletteColors = [
-    '#000000', '#808080', '#D32F2F', '#FF4081', '#FF5722', '#FFC107',
-    '#FFFFFF', '#C8C8C8', '#7B1FA2', '#536DFE', '#FFEB3B', '#4CAF50'
+
+import {
+  Stage,
+  Layer,
+  Rect,
+  Transformer,
+  Circle,
+  Line,
+  RegularPolygon,
+  Star,
+  Shape,
+} from 'react-konva';
+
+const Draw = () => {
+  const [position, setPosition] = useState([]);
+  const [isSelect, setIsSelect] = useState(false);
+  const [rectNode, setRectNode] = useState(null);
+  const transformerRef = useRef();
+  const [color, setColor] = useState('#f44336');
+  const [fmenu, setFmenu] = useState(false);
+  let propertiesref=useRef(false);
+  let selecteditem=useRef(null);
+
+  const isDrawingRef = useRef(false);
+  const id = useRef(0);
+
+  const paletteColors = [
+    '#000000',
+    '#808080',
+    '#D32F2F',
+    '#FF4081',
+    '#FF5722',
+    '#FFC107',
+    '#FFFFFF',
+    '#C8C8C8',
+    '#7B1FA2',
+    '#536DFE',
+    '#FFEB3B',
+    '#4CAF50',
   ];
-  const test=()=>{
-    console.log(ReactDOMServer.renderToStaticMarkup(ReactDOMServer.renderToStaticMarkup(<BsDash />)))
-  }
-  const addrect=()=>{
-    const newrect={x: 100,y:100,width: 100, height: 100,fill: color,id:id.current, shape : 'rectangle',stroke : 'black', strokeWidth: 2};
-    id=id.current+1;
-    flushSync(()=>{
-      setposition([...position,newrect]);
-    })
-    console.log(position)
-  }
-  const addcircle = () => {
-    id.current = id.current + 1;
-    const newcircle = {
-      x: 100,
-      y: 100,
-      radius: 50, // Use radius, NOT width/height
-      fill: color,
-      id: id.current,
-      shape: 'circle',
-      stroke: 'black',
-      strokeWidth: 2,
-      scaleX: 1,
-      scaleY: 1,
-      rotation: 0
-    };
-    flushSync(() => {
-      setposition([...position, newcircle]);
-    });
-  };
-  const addtriangle=()=>{
-    id=id.current+1;
-    const newtriangle={ points:[100,300,200,100,300,300],x: 100,y:100,width: 100, height: 100,fill: color,id: id.current,shape: 'triangle',strokeWidth: 2,stroke: 'black',closed: true};
-    flushSync(()=>{
-      setposition([...position,newtriangle]);
-    })
-  }
- const addhexagon = () => {
-    id.current = id.current + 1;
-    const newhexagon = {
-      x: 100,
-      y: 100,
-      // Remove width/height, use radius for polygons
-      radius: 50, 
-      sides: 6,
-      fill: color,
-      id: id.current,
-      shape: 'hexagon',
-      strokeWidth: 2,
-      stroke: 'black',
-      rotation: 0,
-      scaleX: 1, // Initialize scale
-      scaleY: 1
-    };
-    flushSync(() => {
-      setposition([...position, newhexagon]);
-    });
+
+  const test = () => {
+    console.log(
+      ReactDOMServer.renderToStaticMarkup(
+        ReactDOMServer.renderToStaticMarkup(<BsDash />)
+      )
+    );
   };
 
-  const adddiamond = () => {
-    id.current = id.current + 1;
-    const newdiamond = {
+  const addRect = () => {
+    id.current += 1;
+    const newRect = {
       x: 100,
       y: 100,
-      // Remove width/height, use radius
+      width: 100,
+      height: 100,
+      fill: color,
+      id: id.current,
+      shape: 'Rectangle',
+      stroke: 'black',
+      strokeWidth: 2,
+    };
+
+    flushSync(() => setPosition((prev) => [...prev, newRect]));
+  };
+
+  const addCircle = () => {
+    id.current += 1;
+    const newCircle = {
+      x: 100,
+      y: 100,
       radius: 50,
-      sides: 4,
       fill: color,
       id: id.current,
-      shape: 'diamond',
-      strokeWidth: 2,
+      shape: 'Circle',
       stroke: 'black',
-      rotation: 0,
-      scaleX: 1,
-      scaleY: 1
+      strokeWidth: 2,
     };
-    flushSync(() => {
-      setposition([...position, newdiamond]);
-    });
+
+    flushSync(() => setPosition((prev) => [...prev, newCircle]));
   };
 
-  const addstar = () => {
-    id.current = id.current + 1;
-    const newstar = {
-      id: String(id.current),
-      shape: 'star',
+  const addTriangle = () => {
+    id.current += 1;
+    const newTriangle = {
+      points: [100, 300, 200, 100, 300, 300],
+      x: 100,
+      y: 100,
+      width: 100,
+      height: 100,
+      fill: color,
+      id: id.current,
+      shape: 'Triangle',
+      strokeWidth: 2,
+      stroke: 'black',
+      closed: true,
+    };
+
+    flushSync(() => setPosition((prev) => [...prev, newTriangle]));
+  };
+
+  const addHexagon = () => {
+    id.current += 1;
+    const newHexagon = {
+      x: 100,
+      y: 100,
+      sides: 6,
+      radius: 50,
+      fill: color,
+      id: id.current,
+      shape: 'Hexagon',
+      strokeWidth: 2,
+      stroke: 'black',
+    };
+
+    flushSync(() => setPosition((prev) => [...prev, newHexagon]));
+  };
+
+  const addDiamond = () => {
+    id.current += 1;
+    const newDiamond = {
+      x: 100,
+      y: 100,
+      sides: 4,
+      radius: 50,
+      fill: color,
+      id: id.current,
+      shape: 'Diamond',
+      strokeWidth: 2,
+      stroke: 'black',
+    };
+
+    flushSync(() => setPosition((prev) => [...prev, newDiamond]));
+  };
+
+  const addHeart = () => {
+    id.current += 1;
+    const newHeart = {
+      id: id.current,
+      shape: 'Heart',
+      x: 200,
+      y: 200,
+      scale: 1,
+      fill: color,
+      stroke: 'black',
+      strokeWidth: 2,
+    };
+
+    flushSync(() => setPosition((prev) => [...prev, newHeart]));
+  };
+
+  const addStar = () => {
+    id.current += 1;
+    const newStar = {
+      id: id.current,
+      shape: 'Star',
       x: 150,
       y: 150,
       numPoints: 5,
@@ -117,451 +187,479 @@ const Draw=()=>{
       fill: color,
       stroke: 'black',
       strokeWidth: 2,
-      rotation: 0,
-      scaleX: 1,
-      scaleY: 1
     };
-    flushSync(() => {
-      setposition([...position, newstar]);
-    });
+
+    flushSync(() => setPosition((prev) => [...prev, newStar]));
   };
 
-  const addheart = () => {
-    id.current += 1;
-    const newheart = {
-      id: String(id.current),
-      shape: 'heart',
-      x: 200,
-      y: 200,
-      // FIX: Use scaleX and scaleY instead of 'scale'
-      scaleX: 1,
-      scaleY: 1,
-      fill: color,
-      stroke: 'black',
-      strokeWidth: 2,
-      rotation: 0,
-    };
-    flushSync(() => setposition((prev) => [...prev, newheart]));
-  };
-  const handleselect=(e)=>{
-   
-    flushSync(
-        ()=>{
-          setrect(e.target);
-          flushSync(()=>{
-          setisselect(false);}
-        )
-          setisselect(true);
-          
-        }
-      );
-    
-    console.log(rect);
-    console.log(isselect)
-  }
-  const handledeselect=(e)=>{
-    if (e.target.getStage()===e.target){
-      flushSync(
-        ()=>{
-          setisselect(false);
-        }
-      );
-    }
-    console.log(isselect);
-
-  }
-   useEffect(()=>{
-    if (isselect){
-      transformerRef.current.nodes([rect])
-      transformerRef.current.getLayer().batchDraw();
-      console.log(rect);
-    }
-  },[isselect])
-const transformend = (e) => {
+  const handleSelect = (e) => {
+    propertiesref.current=true;
     const node = e.target;
-    const scaleX = node.scaleX();
-    const scaleY = node.scaleY();
-    
-    // Find the item in your state
-    const index = position.findIndex(p => String(p.id) === String(node.id()));
+    console.log(e.target.attrs);
+    selecteditem.current=e.target;
 
     flushSync(() => {
-      setposition(
-        position.map((item, i) => {
-          if (i !== index) return item;
+      setRectNode(node);
+      setIsSelect(false);
+      setIsSelect(true);
+    });
+  };
 
-          const newItem = {
-            ...item,
-            x: node.x(),
-            y: node.y(),
-            rotation: node.rotation(),
-          };
+  const handleDeselect = (e) => {
+    propertiesref.current=false;
+    
+    if (e.target.getStage() === e.target) {
+      flushSync(() => setIsSelect(false));
+    }
+  };
 
-          // --- GROUP 1: Shapes defined by Width/Height ---
-          if (item.shape === 'rectangle') {
-            newItem.width = Math.max(5, node.width() * scaleX);
-            newItem.height = Math.max(5, node.height() * scaleY);
-            // Reset node scale since we absorbed it into width/height
-            node.scaleX(1);
-            node.scaleY(1);
-          } 
-          
-          // --- GROUP 2: Shapes defined by Radius (Circle, Hexagon, Diamond) ---
-          else if (item.shape === 'circle' || item.shape === 'hexagon' || item.shape === 'diamond') {
-             // Calculate new radius based on scaleX (assuming uniform or taking max)
-             // Using max ensures it doesn't flatten if dragged diagonally
-             const maxScale = Math.max(Math.abs(scaleX), Math.abs(scaleY));
-             newItem.radius = Math.max(5, item.radius * maxScale);
-             
-             // Reset node scale
-             node.scaleX(1);
-             node.scaleY(1);
-          }
+  useEffect(() => {
+    if (isSelect && rectNode && transformerRef.current) {
+      transformerRef.current.nodes([rectNode]);
+      transformerRef.current.getLayer().batchDraw();
+    }
+  }, [isSelect, rectNode]);
 
-          // --- GROUP 3: Star (Inner/Outer Radius) ---
-          else if (item.shape === 'star') {
-             const maxScale = Math.max(Math.abs(scaleX), Math.abs(scaleY));
-             newItem.outerRadius = Math.max(5, item.outerRadius * maxScale);
-             newItem.innerRadius = Math.max(2, item.innerRadius * maxScale);
-             
-             // Reset node scale
-             node.scaleX(1);
-             node.scaleY(1);
-          }
+  const transformEnd = (e) => {
+    const node = rectNode;
+    if (!node) return;
 
-          // --- GROUP 4: Lines/Triangles (Points) ---
-          else if (item.shape === 'triangle') {
-             newItem.points = item.points.map((point, idx) => {
-               return idx % 2 === 0 ? point * scaleX : point * scaleY;
-             });
-             node.scaleX(1);
-             node.scaleY(1);
-          }
+    const sx = node.scaleX();
+    const sy = node.scaleY();
+    const index = e.target.index - 1;
 
-          // --- GROUP 5: Custom Shapes (Heart) ---
-          // For the heart, we DO NOT absorb the scale into geometry.
-          // We DO NOT reset the node.scaleX to 1.
-          // We simply save the new scale into state.
-          else if (item.shape === 'heart') {
-             newItem.scaleX = scaleX;
-             newItem.scaleY = scaleY;
-          }
+    flushSync(() => {
+      node.scaleX(1);
+      node.scaleY(1);
 
-          return newItem;
-        })
+      setPosition((prev) =>
+        prev.map((item, i) =>
+          i === index
+            ? {
+                ...item,
+                x: node.x(),
+                y: node.y(),
+                width: Math.max(5, (item.width || node.width()) * sx),
+                height: Math.max(5, (item.height || node.height()) * sy),
+              }
+            : item
+        )
       );
     });
   };
-  const colorchange=(e)=>{
-    console.log(e);
 
+  const colorChange = (col) => {
+    // placeholder for color change logic
+    console.log(col);
+  };
+
+  const openFMenu = () => setFmenu((prev) => !prev);
+  const newFile = () => {};
+  const openFile = () => {};
+  const saveFile = () => {};
+  const saveAsFile = () => {};
+  const exportAsFile = () => {};
+
+  const handleMouseUp = () => {
+    isDrawingRef.current = true;
+  };
+
+  const updatex=(e)=>{
+   console.log(e.target.value);
+   propertiesref.current=true;
+  setPosition((prev)=>
+  prev.map((obj)=>
+    obj.id===selecteditem.current.attrs.id? {...obj ,x:e.target.value}: obj
+  )
+  )
+  }
+  const updatey=(e)=>{
+   console.log(e.target.value);
+   propertiesref.current=true;
+  setPosition((prev)=>
+  prev.map((obj)=>
+    obj.id===selecteditem.current.attrs.id? {...obj ,y:e.target.value}: obj
+  )
+  )
+  }
+  const updateh=(e)=>{
+   console.log(e.target.value);
+   propertiesref.current=true;
+  setPosition((prev)=>
+  prev.map((obj)=>
+    obj.id===selecteditem.current.attrs.id? {...obj ,height :e.target.value}: obj
+  )
+  )
+  }
+  const updatew=(e)=>{
+   console.log(e.target.value);
+   propertiesref.current=true;
+  setPosition((prev)=>
+  prev.map((obj)=>
+    obj.id===selecteditem.current.attrs.id? {...obj ,width: e.target.value}: obj
+  )
+  )
+  }
+  const updatecolor=(c)=>{
+   
+   propertiesref.current=true;
+  setPosition((prev)=>
+  prev.map((obj)=>
+    obj.id===selecteditem.current.attrs.id? {...obj ,fill: c.hex}: obj
+  )
+  )
   }
 
-  const openfmenu=()=>{
-    console.log('file')
-    if (fmenu===false){
-      setfmenu(true);
-    }
-    else{
-       setfmenu(false);
-    }
 
-  }
-  const newfile=()=>{
+  return (
+    <div className="centercolumn">
+      <div className="menucontainer center">
+        <button onClick={openFMenu} style={{ color: 'white' }}>
+          File
+        </button>
+      </div>
 
-  }
-  const openfile=()=>{
-
-  }
-  const savefile=()=>{
-
-  }
-  const saveasfile=()=>{
-
-  }
-  const exportasfile=()=>{
-
-  }
-  const handlemouseup=()=>{
-    isDrawingRef.current=true;
-
-  }
-  
-
-    return(
-        <>
-        <div className='centercolumn'>
-          <div className='menucontainer center'>
-        <button onClick={openfmenu} style={{color: 'white'}}>File</button>
+      {fmenu && (
+        <div className="filemenucontainer centercolumn">
+          <button style={{ color: 'white' }} onClick={newFile}>
+            New
+          </button>
+          <button style={{ color: 'white' }} onClick={openFile}>
+            Open
+          </button>
+          <button style={{ color: 'white' }} onClick={saveFile}>
+            Save
+          </button>
+          <button style={{ color: 'white' }} onClick={saveAsFile}>
+            Save As
+          </button>
+          <button
+            style={{ color: 'white', marginBottom: '20px' }}
+            onClick={exportAsFile}
+          >
+            Export As
+          </button>
         </div>
-        {
-          fmenu && (
-            <div className='filemenucontainer centercolumn'>
-                <button style={{color: 'white'}} onClick={newfile}>New</button>
-                <button style={{color: 'white'}} onClick={openfile}>Open</button>
-                <button style={{color: 'white'}} onClick={savefile}>Save</button>
-                <button style={{color: 'white'}} onClick={saveasfile}>Save As</button>
-                <button style={{color: 'white',marginBottom: '20px'}} onClick={exportasfile}>Export As</button>
-              
-      
-            </div>
-        )
-        }
-        <table className='toolstable'>
+      )}
+
+      <table className="toolstable">
         <tbody>
-            <tr>
-                <td className='toolstd'>
-                    <div className='selection centercolumn'>
-                        <div className='dotterlines'>
-                        </div>
-                        <FaChevronDown/>
-                        <p className='lowtop'>Selection</p>
-                    </div>
-                </td>
-                <td className='toolstd'>
-                    <div className='picturetools center'>
-                        <table>
-                            <tbody>
-                                <tr className='picturesrow'>
-                                    <td><FaCropAlt/></td><td><MdRotateLeft /></td><td><MdRotateRight /></td>
-                                </tr>
-                                <tr className='picturesrow'>
-                                   <td><FaExpandArrowsAlt /></td><td><FaMagic /></td><td><FaPaintBrush/></td>
-                                </tr>
-                            </tbody>
-                        </table>
-                        
-                    </div>
+          <tr>
+            <td className="toolstd">
+              <div className="selection centercolumn">
+                <div className="dotterlines" />
+                <FaChevronDown />
+                <p className="lowtop">Selection</p>
+              </div>
+            </td>
 
-                </td>
-                <td className='toolstd' >
-                    <div className='paintchooseb center'>
-                    
-                        <CirclePicker
-                            color={color}
-                            colors={paletteColors}
-                            onChangeComplete={(color) => {setColor(color.hex)
-                                console.log(color.hex);
-                            }}
-                            onClick={colorchange}
-                        />
-                    </div>
+            <td className="toolstd">
+              <div className="picturetools center">
+                <table>
+                  <tbody>
+                    <tr className="picturesrow">
+                      <td>
+                        <FaCropAlt />
+                      </td>
+                      <td>
+                        <MdRotateLeft />
+                      </td>
+                      <td>
+                        <MdRotateRight />
+                      </td>
+                    </tr>
+                    <tr className="picturesrow">
+                      <td>
+                        <FaExpandArrowsAlt />
+                      </td>
+                      <td>
+                        <FaMagic />
+                      </td>
+                      <td>
+                        <FaPaintBrush />
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </td>
 
-                </td>
-                <td className='toolstd shapesb center'>
-                    <div className='shapeslist' style={{marginLeft:"20px"}}>
-                        <button title="Line" onClick={test}><BsDash /></button>
-                        <button title="Rectangle" onClick={addrect}><FaRegSquare /></button>
-                        <button title="Circle" onClick={addcircle}><FaRegCircle /></button>
-                        <button title="Triangle" onClick={addtriangle}><BsTriangle /></button>
-                        <button title="Hexagon" onClick={addhexagon}><BsHexagon /></button>
-                        <button title="Diamond" onClick={adddiamond}><BsDiamond /></button>
-                        <button title="Star" onClick={addstar}><FaRegStar /></button>
-                        <button title="Heart" onClick={addheart}><FaRegHeart /></button>
-                        <button title="All Shapes"><FaShapes /></button>
-                       
-                    </div>
+            <td className="toolstd">
+              <div className="paintchooseb center">
+                <CirclePicker
+                  color={color}
+                  colors={paletteColors}
+                  onChangeComplete={(c) => {
+                    setColor(c.hex);
+                    console.log(c.hex);
+                  }}
+                  onClick={colorChange}
+                />
+              </div>
+            </td>
 
-                </td>
-                <td className='toolstd'>
-                    <div className='selectpvf centercolumn'>
-                        <button title="Vertex Select">
-                            <TbPointFilled />
-                        </button>
-                        <button title="Edge Select">
-                            <TbLine />
-                        </button>
-                        <button title="Face Select">
-                            <TbSquare />
-                        </button>
-                        
-                    </div>
+            <td className="toolstd shapesb center">
+              <div className="shapeslist" style={{ marginLeft: '20px' }}>
+                <button title="Line" onClick={test}>
+                  <BsDash />
+                </button>
+                <button title="Rectangle" onClick={addRect}>
+                  <FaRegSquare />
+                </button>
+                <button title="Circle" onClick={addCircle}>
+                  <FaRegCircle />
+                </button>
+                <button title="Triangle" onClick={addTriangle}>
+                  <BsTriangle />
+                </button>
+                <button title="Hexagon" onClick={addHexagon}>
+                  <BsHexagon />
+                </button>
+                <button title="Diamond" onClick={addDiamond}>
+                  <BsDiamond />
+                </button>
+                <button title="Star" onClick={addStar}>
+                  <FaRegStar />
+                </button>
+                <button title="Heart" onClick={addHeart}>
+                  <FaRegHeart />
+                </button>
+                <button title="All Shapes">
+                  <FaShapes />
+                </button>
+              </div>
+            </td>
 
-                </td>
-                 <td className='toolstd textc'>
-                    <div className='centercolumn textelementsblock'>
-                   
-                    <h3 style={{textDecoration: "underline",border:"2px dashed white",width:"30px",height:"30px",paddingLeft:"10px",marginBottom:"10px",marginTop:"0px"}}>T</h3>
-                    <div className='textsizeblock' style={{marginBottom:"10px"}}>
-                    <input type='number' style={{width: "30px",backgroundColor:"rgba(255,255,255,0.0)",border:"none",borderBottom:"2px solid rgba(255,255,255,0.5)",color:"white",marginLeft:"10px"}} className='tsiblock'/>
-                    <select name='textsize' style={{backgroundColor:"rgba(255,255,255,0.0)",border:"none",color:"white"}}>
-                        <option>2pt</option>
-                        <option>4pt</option>
-                        <option>8pt</option>
-                        <option>16pt</option>
-                        <option>32pt</option>
-                        <option>64pt</option>
-                    </select>
-                    </div>
-                    <select name='font' style={{backgroundColor:"rgba(255,255,255,0.0)",border:"none",color:"white"}}>
-                        <option>Times New Roman</option>
-                        <option>Sans Serif</option>
-                        <option>Arial</option>
-                        <option>Futura</option>
-                        <option>Garmond</option>
-                        <option>Verdana</option>
-                    </select>
-                    </div>
-                    
-                    
-                </td>
-            </tr>
-           
+            <td className="toolstd">
+              <div className="selectpvf centercolumn">
+                <button title="Vertex Select">
+                  <TbPointFilled />
+                </button>
+                <button title="Edge Select">
+                  <TbLine />
+                </button>
+                <button title="Face Select">
+                  <TbSquare />
+                </button>
+              </div>
+            </td>
+
+            <td className="toolstd textc">
+              <div className="centercolumn textelementsblock">
+                <h3
+                  style={{
+                    textDecoration: 'underline',
+                    border: '2px dashed white',
+                    width: '30px',
+                    height: '30px',
+                    paddingLeft: '10px',
+                    marginBottom: '10px',
+                    marginTop: '0px',
+                  }}
+                >
+                  T
+                </h3>
+
+                <div className="textsizeblock" style={{ marginBottom: '10px' }}>
+                  <input
+                    type="number"
+                    style={{
+                      width: '30px',
+                      backgroundColor: 'rgba(255,255,255,0.0)',
+                      border: 'none',
+                      borderBottom: '2px solid rgba(255,255,255,0.5)',
+                      color: 'white',
+                      marginLeft: '10px',
+                    }}
+                    className="tsiblock"
+                  />
+
+                  <select
+                    name="textsize"
+                    style={{ backgroundColor: 'rgba(255,255,255,0.0)', border: 'none', color: 'white' }}
+                  >
+                    <option>2pt</option>
+                    <option>4pt</option>
+                    <option>8pt</option>
+                    <option>16pt</option>
+                    <option>32pt</option>
+                    <option>64pt</option>
+                  </select>
+                </div>
+
+                <select name="font" style={{ backgroundColor: 'rgba(255,255,255,0.0)', border: 'none', color: 'white' }}>
+                  <option>Times New Roman</option>
+                  <option>Sans Serif</option>
+                  <option>Arial</option>
+                  <option>Futura</option>
+                  <option>Garmond</option>
+                  <option>Verdana</option>
+                </select>
+              </div>
+            </td>
+          </tr>
         </tbody>
-        </table>
-        <div className='page'>
-            <Stage className='stage' width={1000} height={545} onClick={handledeselect} classNames='stage' onMouseUp={handlemouseup}>
+      </table>
+
+      <div className="page">
+        <Stage width={1000} height={545} onClick={handleDeselect} onMouseUp={handleMouseUp} className="stage">
           <Layer>
-            {/* <Rect
-            x={position.x}
-            y={position.y}
-            ref={rectRef}
-            width={position.width}
-            height={position.height}
-            fill={'red'}
-            draggable
-           
-            onClick={handleselect}
-            onTransformEnd={transformend}
-          
-            /> */}
             <Transformer
-            ref={transformerRef}
-            boundBoxFunc={(oldbox,newbox)=>{
-              if (newbox.width<5 || newbox.height<5){
-                return oldbox;
-              }
-              return newbox;
-            }
-
-            }
+              ref={transformerRef}
+              boundBoxFunc={(oldBox, newBox) => {
+                if (newBox.width < 5 || newBox.height < 5) return oldBox;
+                return newBox;
+              }}
             />
-            {
-              position.map((p,i)=>{
-                if (p.shape==='rectangle'){
-                return <Rect
-                {...p}
-                key={p.id}
-                draggable
-                onDragEnd={(e)=>{
-                console.log(e.target.index);
-                }}
-                onClick={handleselect}
-                onTransformEnd={transformend}
-                />
-              }}
-              )
-            }
-            {
-              position.map((p,i)=>{
-                if (p.shape==='circle'){
-                return <Circle
-                {...p}
-                key={p.id}
-                draggable
-                onDragEnd={(e)=>{
-                console.log(e.target.index);
-                }}
-                onClick={handleselect}
-                onTransformEnd={transformend}
-                />
-              }}
-              )
-            }
-             {
-              position.map((p,i)=>{
-                if (p.shape==='triangle'){
-                return <Line
-                {...p}
-                key={p.id}
-                draggable
-                onDragEnd={(e)=>{
-                console.log(e.target.index);
-                }}
-                onClick={handleselect}
-                onTransformEnd={transformend}
-                />
-              }}
-              )
-            }
-             {
-              position.map((p,i)=>{
-                if (p.shape==='hexagon'){
-                return <RegularPolygon
-                {...p}
-                key={p.id}
-                draggable
-                onDragEnd={(e)=>{
-                console.log(e.target.index);
-                }}
-                onClick={handleselect}
-                onTransformEnd={transformend}
-                />
-              }}
-              )
-            }
-             {
-              position.map((p,i)=>{
-                if (p.shape==='diamond'){
-                return <RegularPolygon
-                {...p}
-                key={p.id}
-                draggable
-                onDragEnd={(e)=>{
-                console.log(e.target.index);
-                }}
-                onClick={handleselect}
-                onTransformEnd={transformend}
-                />
-              }}
-              )
-            }
-             {
-              position.map((p,i)=>{
-                if (p.shape==='star'){
-                return <Star
-                {...p}
-                key={p.id}
-                draggable
-                onDragEnd={(e)=>{
-                console.log(e.target.index);
-                }}
-                onClick={handleselect}
-                onTransformEnd={transformend}
-                />
-              }}
-              )
-            }
-             {position.map((p, i) => {
-  if (p.shape === 'heart') {
-    return (
-      <Shape
-        key={p.id}
-        {...p} // <--- Add this to ensure x, y, scaleX, scaleY, rotation are passed
-        sceneFunc={(context, shape) => {
-          context.beginPath();
-          context.moveTo(0, 30);
-          context.bezierCurveTo(-50, -20, -50, -100, 0, -70);
-          context.bezierCurveTo(50, -100, 50, -20, 0, 30);
-          context.closePath();
-          context.fillStrokeShape(shape);
-        }}
-        draggable
-        onClick={handleselect}
-        onTransformEnd={transformend}
-      />
-    );
-  }
-})}
+
+            {position.map((p, i) => {
+              if (p.shape === 'Rectangle') {
+                return (
+                  <Rect
+                    {...p}
+                    key={p.id}
+                    draggable
+                    onDragEnd={() => {}}
+                    onClick={handleSelect}
+                    onTransformEnd={transformEnd}
+                  />
+                );
+              }
+
+              if (p.shape === 'Circle') {
+                return (
+                  <Circle
+                    {...p}
+                    key={p.id}
+                    draggable
+                    onDragEnd={() => {}}
+                    onClick={handleSelect}
+                    onTransformEnd={transformEnd}
+                  />
+                );
+              }
+
+              if (p.shape === 'Triangle') {
+                return (
+                  <Line
+                    {...p}
+                    key={p.id}
+                    draggable
+                    onDragEnd={() => {}}
+                    onClick={handleSelect}
+                    onTransformEnd={transformEnd}
+                  />
+                );
+              }
+
+              if (p.shape === 'Hexagon' || p.shape === 'Diamond') {
+                return (
+                  <RegularPolygon
+                    {...p}
+                    key={p.id}
+                    draggable
+                    onDragEnd={() => {}}
+                    onClick={handleSelect}
+                    onTransformEnd={transformEnd}
+                  />
+                );
+              }
+
+              if (p.shape === 'Star') {
+                return (
+                  <Star
+                    {...p}
+                    key={p.id}
+                    draggable
+                    onDragEnd={() => {}}
+                    onClick={handleSelect}
+                    onTransformEnd={transformEnd}
+                  />
+                );
+              }
+
+              if (p.shape === 'Heart') {
+                return (
+                  <Shape
+                    key={p.id}
+                    x={p.x}
+                    y={p.y}
+                    fill={p.fill}
+                    stroke={p.stroke}
+                    strokeWidth={p.strokeWidth}
+                    draggable
+                    onClick={handleSelect}
+                    onTransformEnd={transformEnd}
+                    sceneFunc={(context, shape) => {
+                      context.beginPath();
+                      context.moveTo(0, 30);
+                      context.bezierCurveTo(-50, -20, -50, -100, 0, -70);
+                      context.bezierCurveTo(50, -100, 50, -20, 0, 30);
+                      context.closePath();
+                      context.fillStrokeShape(shape);
+                    }}
+                  />
+                );
+              }
+
+              return null;
+            })}
           </Layer>
-
         </Stage>
+      </div>
+      { propertiesref.current && 
+      <div className='propertiesdiv centercolumn'>
+        {
+          
+          (position[selecteditem.current.attrs['id']-1]['shape']=='Rectangle') &&<div>
+
+          <h3>Recatangle</h3>
+          <div>
+            <h3>Postion</h3>
+            <table>
+              <tbody>
+                <tr>
+                  <td>X </td><td>:</td><td><input type='number' value={position[selecteditem.current.attrs['id']-1].x} onChange={updatex}/></td>
+                </tr>
+                <tr>
+                  <td>Y </td><td>:</td><td><input type='number' value={position[selecteditem.current.attrs['id']-1].y} onChange={updatey}/></td>
+                </tr>
+              </tbody>
+            </table>
+
+          </div> 
+          <div>
+            <h3>Size</h3>
+            <table>
+              <tbody>
+                <tr>
+                  <td>Height </td><td>:</td><td><input type='number' value={position[selecteditem.current.attrs['id']-1].height} onChange={updateh}/></td>
+                </tr>
+                <tr>
+                  <td>Width </td><td>:</td><td><input type='number' value={position[selecteditem.current.attrs['id']-1].width} onChange={updatew}/></td>
+                </tr>
+              </tbody>
+            </table>
+            <h3>Color</h3>
+            <SketchPicker
+            color={position[selecteditem.current.attrs['id']-1].fill}
+            onChangeComplete={updatecolor}
+            />
             
-        </div>
 
-        </div>
-        </>
-    );
+          </div> 
+          
 
-}
+          </div>
+
+        }
+        
+
+      </div>
+      
+      }
+    </div>
+  );
+};
+
 export default Draw;

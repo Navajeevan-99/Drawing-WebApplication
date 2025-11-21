@@ -76,8 +76,9 @@ const Paint = () => {
     <Stage height={1000} width={1000}  onMouseDown={handlemousedown} ref={stageref}  onMouseMove={handlemousemove} onTouchMove={handlemousemove} onMouseUp={setdrawing}>
       <Layer>
         {
-        lines.map((line)=>(
+        lines.map((line,i)=>(
       <Line
+      key={i}
       {...line}
       
       />))}

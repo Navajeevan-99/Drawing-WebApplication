@@ -45,9 +45,16 @@ const Draw = () => {
   const [fmenu, setFmenu] = useState(false);
   let propertiesref=useRef(false);
   let selecteditem=useRef(null);
+  let isdrawingref=useRef(false);
+  let isdrawingbuttonenable=useRef(false);
+
+   const stageref=useRef(null)
+   const [lines,setlines]=useState([])
+  
 
   const isDrawingRef = useRef(false);
   const id = useRef(0);
+  
 
   const paletteColors = [
     '#000000',
@@ -111,8 +118,8 @@ const Draw = () => {
       points: [100, 300, 200, 100, 300, 300],
       x: 100,
       y: 100,
-      width: 100,
-      height: 100,
+      scaleX: 1,
+      scaleY: 1,
       fill: color,
       id: id.current,
       shape: 'Triangle',
@@ -184,6 +191,8 @@ const Draw = () => {
       numPoints: 5,
       innerRadius: 20,
       outerRadius: 50,
+      scaleX: 1.5,
+      scaleY: 1,
       fill: color,
       stroke: 'black',
       strokeWidth: 2,
@@ -204,6 +213,11 @@ const Draw = () => {
       setIsSelect(true);
     });
   };
+   const selectdraw=(e)=>{
+    propertiesref.current=true;
+    selecteditem.current=e.target;
+  }
+  
 
   const handleDeselect = (e) => {
     propertiesref.current=false;
@@ -262,6 +276,7 @@ const Draw = () => {
 
   const handleMouseUp = () => {
     isDrawingRef.current = true;
+    isdrawingref.current=false;
   };
 
   const updatex=(e)=>{
@@ -291,12 +306,56 @@ const Draw = () => {
   )
   )
   }
+  
+  // const updatetheight=(e)=>{
+  //  console.log(e.target.value);
+  //  propertiesref.current=true;
+  // setPosition((prev)=>
+  // prev.map((obj)=>
+  //   obj.id===selecteditem.current.attrs.id? {...obj , points: obj.points.map((p,i)=> i==3?e.target.value:p)}: obj
+  // )
+  // )
+  // }
+  // const updatetwidth=(e)=>{
+  //  console.log(e.target.value);
+  //  propertiesref.current=true;
+  //  let 
+  //  setPosition((prev)=>
+  // prev.map((obj)=>
+  //   obj.id===selecteditem.current.attrs.id? {...obj , points: obj.points.map((p,i)=> i==0?p-(p-e.target.value):p)}: obj
+  // )
+  // )
+  //  setPosition((prev)=>
+  // prev.map((obj)=>
+  //   obj.id===selecteditem.current.attrs.id? {...obj , points: obj.points.map((p,i)=> i==4?p+(p-e.target.value):p)}: obj
+  // )
+  // )
+  
+  // }
   const updatew=(e)=>{
    console.log(e.target.value);
    propertiesref.current=true;
   setPosition((prev)=>
   prev.map((obj)=>
     obj.id===selecteditem.current.attrs.id? {...obj ,width: e.target.value}: obj
+  )
+  )
+  }
+  const updatescaley=(e)=>{
+   console.log(e.target.value);
+   propertiesref.current=true;
+  setPosition((prev)=>
+  prev.map((obj)=>
+    obj.id===selecteditem.current.attrs.id? {...obj ,scaleY: e.target.value}: obj
+  )
+  )
+  }
+  const updatescalex=(e)=>{
+   console.log(e.target.value);
+   propertiesref.current=true;
+  setPosition((prev)=>
+  prev.map((obj)=>
+    obj.id===selecteditem.current.attrs.id? {...obj ,scaleX: e.target.value}: obj
   )
   )
   }
@@ -308,6 +367,129 @@ const Draw = () => {
     obj.id===selecteditem.current.attrs.id? {...obj ,fill: c.hex}: obj
   )
   )
+  }
+  const updatestroke=(e)=>{
+    propertiesref.current=true;
+    setPosition((prev)=>
+  prev.map((obj)=>
+    obj.id===selecteditem.current.attrs.id? {...obj ,stroke: e.target.value}: obj
+  )
+  )
+  }
+  const updatestrokewidth=(e)=>{
+    propertiesref.current=true;
+    setPosition((prev)=>
+  prev.map((obj)=>
+    obj.id===selecteditem.current.attrs.id? {...obj ,strokeWidth: e.target.value}: obj
+  )
+  )
+ }
+
+  const updateradius=(e)=>{
+    propertiesref.current=true;
+    setPosition((prev)=>
+  prev.map((obj)=>
+    obj.id===selecteditem.current.attrs.id? {...obj ,radius: e.target.value}: obj
+  )
+  )
+ }
+  const updateinnerradius=(e)=>{
+    propertiesref.current=true;
+    setPosition((prev)=>
+  prev.map((obj)=>
+    obj.id===selecteditem.current.attrs.id? {...obj ,innerRadius: e.target.value}: obj
+  )
+  )
+ }
+  const updateouterradius=(e)=>{
+    propertiesref.current=true;
+    setPosition((prev)=>
+  prev.map((obj)=>
+    obj.id===selecteditem.current.attrs.id? {...obj ,outerRadius: e.target.value}: obj
+  )
+  )
+ }
+  const updatepoints=(e)=>{
+    propertiesref.current=true;
+    if (e.target.value<1){
+      return;
+    }
+    setPosition((prev)=>
+      
+  prev.map((obj)=>
+    obj.id===selecteditem.current.attrs.id? {...obj ,sides: e.target.value}: obj
+  )
+  )
+ }
+  const updatenumpoints=(e)=>{
+    propertiesref.current=true;
+    if (e.target.value<1){
+      return;
+    }
+    setPosition((prev)=>
+      
+  prev.map((obj)=>
+    obj.id===selecteditem.current.attrs.id? {...obj ,numPoints: e.target.value}: obj
+  )
+  )
+ }
+  const drawingbutton=()=>{
+    if (isdrawingbuttonenable.current===false){
+      isdrawingbuttonenable.current=true;
+    }
+    else{
+      isdrawingbuttonenable.current=false;
+
+    }
+    console.log(isdrawingbuttonenable.current);
+
+  }
+ 
+   
+  
+   const handlemousedown=(e)=>{
+    if (e.evt && e.evt.button===2) return;
+    isdrawingref.current=true;
+    if (!isdrawingbuttonenable.current) return;
+   
+    const pos=stageref.current.getPointerPosition();
+    const newline={
+      points: [pos.x,pos.y],
+      stage: 'draw',
+      stroke: 'black',
+     
+      strokeWidth: 5,
+      tension: 0.5,
+      linCap: 'round',
+      lineJoin: 'round',
+    }
+    setlines([...lines,newline])
+    console.log('down')
+    console.log(isdrawingbuttonenable.current); 
+    console.log(isdrawingref.current); 
+    
+  }
+  const handlemousemove=(e)=>{
+    if (!isdrawingref.current || !isdrawingbuttonenable.current) return;
+    
+    const pos=stageref.current.getPointerPosition();
+    setlines((prev)=>{
+      let next=prev.slice();
+      let last=next[next.length-1];
+      if (!last) return next;
+      last.points=last.points.concat([pos.x,pos.y]);
+      console.log('moving...')
+      console.log(isdrawingref.current);
+      console.log(isdrawingbuttonenable.current);
+      return next;
+      
+
+
+    })
+    
+    
+
+
   }
 
 
@@ -375,8 +557,8 @@ const Draw = () => {
                       <td>
                         <FaMagic />
                       </td>
-                      <td>
-                        <FaPaintBrush />
+                      <td><button onClick={drawingbutton}> <FaPaintBrush /></button>
+                       
                       </td>
                     </tr>
                   </tbody>
@@ -502,7 +684,7 @@ const Draw = () => {
       </table>
 
       <div className="page">
-        <Stage width={1000} height={545} onClick={handleDeselect} onMouseUp={handleMouseUp} className="stage">
+        <Stage width={1000} height={545} onClick={handleDeselect} onTouchMove={handlemousemove}  onMouseMove={handlemousemove} ref={stageref} onMouseDown={handlemousedown} onMouseUp={handleMouseUp} className="stage">
           <Layer>
             <Transformer
               ref={transformerRef}
@@ -511,6 +693,14 @@ const Draw = () => {
                 return newBox;
               }}
             />
+            {
+              lines.map((line)=>(
+                    <Line
+                    {...line}
+                    onClick={selectdraw}
+                    
+                    />))
+            }
 
             {position.map((p, i) => {
               if (p.shape === 'Rectangle') {
@@ -577,6 +767,8 @@ const Draw = () => {
                   />
                 );
               }
+             
+
 
               if (p.shape === 'Heart') {
                 return (
@@ -613,7 +805,7 @@ const Draw = () => {
           
           (position[selecteditem.current.attrs['id']-1]['shape']=='Rectangle') &&<div>
 
-          <h3>Recatangle</h3>
+          <h3 style={{marginTop: 90}}>Recatangle</h3>
           <div>
             <h3>Postion</h3>
             <table>
@@ -639,20 +831,357 @@ const Draw = () => {
                   <td>Width </td><td>:</td><td><input type='number' value={position[selecteditem.current.attrs['id']-1].width} onChange={updatew}/></td>
                 </tr>
               </tbody>
-            </table>
-            <h3>Color</h3>
+            </table>           
+
+          </div> 
+          <div>
+            <h3>Strokes Properties</h3>
+            <table>
+              <tbody>
+                <tr>
+                  <td>Stroke </td><td>:</td><td><input type='color' value={position[selecteditem.current.attrs['id']-1].stroke} onChange={updatestroke}/></td>
+                </tr>
+                <tr>
+                  <td>SWidth </td><td>:</td><td><input type='number' value={position[selecteditem.current.attrs['id']-1].strokeWidth} onChange={updatestrokewidth}/></td>
+                </tr>
+              </tbody>
+            </table>           
+
+          </div> 
+          <h3>Color</h3>
             <SketchPicker
             color={position[selecteditem.current.attrs['id']-1].fill}
             onChangeComplete={updatecolor}
             />
-            
-
-          </div> 
           
 
           </div>
 
         }
+        
+        {
+          
+          (position[selecteditem.current.attrs['id']-1]['shape']=='Circle') &&<div>
+
+          <h3 style={{marginTop: 90}}>{position[selecteditem.current.attrs['id']-1]['shape']}</h3>
+          <div>
+            <h3>Postion</h3>
+            <table>
+              <tbody>
+                <tr>
+                  <td>X </td><td>:</td><td><input type='number' value={position[selecteditem.current.attrs['id']-1].x} onChange={updatex}/></td>
+                </tr>
+                <tr>
+                  <td>Y </td><td>:</td><td><input type='number' value={position[selecteditem.current.attrs['id']-1].y} onChange={updatey}/></td>
+                </tr>
+              </tbody>
+            </table>
+
+          </div> 
+          <div>
+            <h3>Size</h3>
+            <table>
+              <tbody>
+                <tr>
+                  <td>Radius </td><td>:</td><td><input type='number' value={position[selecteditem.current.attrs['id']-1].radius} onChange={updateradius}/></td>
+                </tr>
+                
+              </tbody>
+            </table>           
+
+          </div> 
+          <div>
+            <h3>Strokes Properties</h3>
+            <table>
+              <tbody>
+                <tr>
+                  <td>Stroke </td><td>:</td><td><input type='color' value={position[selecteditem.current.attrs['id']-1].stroke} onChange={updatestroke}/></td>
+                </tr>
+                <tr>
+                  <td>SWidth </td><td>:</td><td><input type='number' value={position[selecteditem.current.attrs['id']-1].strokeWidth} onChange={updatestrokewidth}/></td>
+                </tr>
+              </tbody>
+            </table>           
+
+          </div> 
+          <h3>Color</h3>
+            <SketchPicker
+            color={position[selecteditem.current.attrs['id']-1].fill}
+            onChangeComplete={updatecolor}
+            />
+          
+
+          </div>
+
+        }
+        {
+          
+          (position[selecteditem.current.attrs['id']-1]['shape']=='Hexagon') &&<div>
+
+          <h3 style={{marginTop: 90}}>{position[selecteditem.current.attrs['id']-1]['shape']}</h3>
+          <div>
+            <h3>Postion</h3>
+            <table>
+              <tbody>
+                <tr>
+                  <td>X </td><td>:</td><td><input type='number' value={position[selecteditem.current.attrs['id']-1].x} onChange={updatex}/></td>
+                </tr>
+                <tr>
+                  <td>Y </td><td>:</td><td><input type='number' value={position[selecteditem.current.attrs['id']-1].y} onChange={updatey}/></td>
+                </tr>
+              </tbody>
+            </table>
+
+          </div> 
+          <div>
+            <h3>Size</h3>
+            <table>
+              <tbody>
+                <tr>
+                  <td>Radius </td><td>:</td><td><input type='number' value={position[selecteditem.current.attrs['id']-1].radius} onChange={updateradius}/></td>
+                </tr>
+                
+              </tbody>
+            </table>           
+
+          </div> 
+          <div>
+            <h3>Strokes Properties</h3>
+            <table>
+              <tbody>
+                <tr>
+                  <td>Stroke </td><td>:</td><td><input type='color' value={position[selecteditem.current.attrs['id']-1].stroke} onChange={updatestroke}/></td>
+                </tr>
+                <tr>
+                  <td>SWidth </td><td>:</td><td><input type='number' value={position[selecteditem.current.attrs['id']-1].strokeWidth} onChange={updatestrokewidth}/></td>
+                </tr>
+                <tr>
+                  <td>Points </td><td>:</td><td><input type='number' value={position[selecteditem.current.attrs['id']-1].sides} onChange={updatepoints}/></td>
+                </tr>
+              </tbody>
+            </table>           
+
+          </div> 
+          <h3>Color</h3>
+            <SketchPicker
+            color={position[selecteditem.current.attrs['id']-1].fill}
+            onChangeComplete={updatecolor}
+            />
+          
+
+          </div>
+
+        }
+        {
+          
+          (position[selecteditem.current.attrs['id']-1]['shape']=='Diamond') &&<div>
+
+          <h3 style={{marginTop: 90}}>{position[selecteditem.current.attrs['id']-1]['shape']}</h3>
+          <div>
+            <h3>Postion</h3>
+            <table>
+              <tbody>
+                <tr>
+                  <td>X </td><td>:</td><td><input type='number' value={position[selecteditem.current.attrs['id']-1].x} onChange={updatex}/></td>
+                </tr>
+                <tr>
+                  <td>Y </td><td>:</td><td><input type='number' value={position[selecteditem.current.attrs['id']-1].y} onChange={updatey}/></td>
+                </tr>
+              </tbody>
+            </table>
+
+          </div> 
+          <div>
+            <h3>Size</h3>
+            <table>
+              <tbody>
+                <tr>
+                  <td>Radius </td><td>:</td><td><input type='number' value={position[selecteditem.current.attrs['id']-1].radius} onChange={updateradius}/></td>
+                </tr>
+                
+              </tbody>
+            </table>           
+
+          </div> 
+          <div>
+            <h3>Strokes Properties</h3>
+            <table>
+              <tbody>
+                <tr>
+                  <td>Stroke </td><td>:</td><td><input type='color' value={position[selecteditem.current.attrs['id']-1].stroke} onChange={updatestroke}/></td>
+                </tr>
+                <tr>
+                  <td>SWidth </td><td>:</td><td><input type='number' value={position[selecteditem.current.attrs['id']-1].strokeWidth} onChange={updatestrokewidth}/></td>
+                </tr>
+                
+              </tbody>
+            </table>           
+
+          </div> 
+          <h3>Color</h3>
+            <SketchPicker
+            color={position[selecteditem.current.attrs['id']-1].fill}
+            onChangeComplete={updatecolor}
+            />
+          
+
+          </div>
+
+        }
+        {
+          
+          (position[selecteditem.current.attrs['id']-1]['shape']=='Star') &&<div>
+          <h3 style={{marginTop: 100}}>Star</h3>
+          <div>
+            <h3>Postion</h3>
+            <table>
+              <tbody>
+                <tr>
+                  <td>X </td><td>:</td><td><input type='number' value={position[selecteditem.current.attrs['id']-1].x} onChange={updatex}/></td>
+                </tr>
+                <tr>
+                  <td>Y </td><td>:</td><td><input type='number' value={position[selecteditem.current.attrs['id']-1].y} onChange={updatey}/></td>
+                </tr>
+              </tbody>
+            </table>
+
+          </div> 
+          <div>
+            <h3>Size</h3>
+            <table>
+              <tbody>
+                <tr>
+                  <td>IRadius </td><td>:</td><td><input type='number' value={position[selecteditem.current.attrs['id']-1].innerRadius} onChange={updateinnerradius}/></td>
+                </tr>
+                <tr>
+                  <td>ORadius </td><td>:</td><td><input type='number' value={position[selecteditem.current.attrs['id']-1].outerRadius} onChange={updateouterradius}/></td>
+                </tr>
+                <tr>
+                  <td>Height </td><td>:</td><td><input type='number' value={position[selecteditem.current.attrs['id']-1].scaleY} onChange={updatescaley}/></td>
+                </tr>
+                <tr>
+                  <td>Width </td><td>:</td><td><input type='number' value={position[selecteditem.current.attrs['id']-1].scaleX} onChange={updatescalex}/></td>
+                </tr>
+                
+              </tbody>
+            </table>           
+
+          </div> 
+          <div>
+            <h3>Strokes Properties</h3>
+            <table>
+              <tbody>
+                <tr>
+                  <td>Stroke </td><td>:</td><td><input type='color' value={position[selecteditem.current.attrs['id']-1].stroke} onChange={updatestroke}/></td>
+                </tr>
+                <tr>
+                  <td>SWidth </td><td>:</td><td><input type='number' value={position[selecteditem.current.attrs['id']-1].strokeWidth} onChange={updatestrokewidth}/></td>
+                </tr>
+                <tr>
+                  <td>Points </td><td>:</td><td><input type='number' value={position[selecteditem.current.attrs['id']-1].numPoints} onChange={updatenumpoints}/></td>
+                </tr>
+                
+              </tbody>
+            </table>           
+
+          </div> 
+          <h3>Color</h3>
+            <SketchPicker
+            color={position[selecteditem.current.attrs['id']-1].fill}
+            onChangeComplete={updatecolor}
+            />
+
+          </div>
+
+        }
+        {
+          
+          (position[selecteditem.current.attrs['did']-1]['shape']=='Draw') &&<div>
+          <h3 style={{marginTop: 100}}>Draw</h3>
+        
+          <div>
+            <h3>Strokes Properties</h3>
+            <table>
+              <tbody>
+                <tr>
+                  <td>Stroke </td><td>:</td><td><input type='color' value={position[selecteditem.current.attrs['id']-1].stroke} onChange={updatestroke}/></td>
+                </tr>
+                <tr>
+                  <td>SWidth </td><td>:</td><td><input type='number' value={position[selecteditem.current.attrs['id']-1].strokeWidth} onChange={updatestrokewidth}/></td>
+                </tr>
+                
+              </tbody>
+            </table>           
+
+          </div> 
+          <h3>Color</h3>
+            <SketchPicker
+            color={position[selecteditem.current.attrs['id']-1].fill}
+            onChangeComplete={updatecolor}
+            />
+
+          </div>
+
+        }
+        {/* {
+          
+          (position[selecteditem.current.attrs['id']-1]['shape']=='Triangle') &&<div>
+          <h3 style={{marginTop: 100}}>Star</h3>
+          <div>
+            <h3>Postion</h3>
+            <table>
+              <tbody>
+                <tr>
+                  <td>X </td><td>:</td><td><input type='number' value={position[selecteditem.current.attrs['id']-1].x} onChange={updatex}/></td>
+                </tr>
+                <tr>
+                  <td>Y </td><td>:</td><td><input type='number' value={position[selecteditem.current.attrs['id']-1].y} onChange={updatey}/></td>
+                </tr>
+              </tbody>
+            </table>
+
+          </div> 
+          <div>
+            <h3>Size</h3>
+            <table>
+              <tbody>
+                
+                <tr>
+                  <td>Height </td><td>:</td><td><input type='number' value={position[selecteditem.current.attrs['id']-1].points[3]} onChange={updatetheight}/></td>
+                </tr>
+                <tr>
+                  <td>Width </td><td>:</td><td><input type='number' value={position[selecteditem.current.attrs['id']-1].points[4]} onChange={updatetwidth}/></td>
+                </tr>
+                
+              </tbody>
+            </table>           
+
+          </div> 
+          <div>
+            <h3>Strokes Properties</h3>
+            <table>
+              <tbody>
+                <tr>
+                  <td>Stroke </td><td>:</td><td><input type='color' value={position[selecteditem.current.attrs['id']-1].stroke} onChange={updatestroke}/></td>
+                </tr>
+                <tr>
+                  <td>SWidth </td><td>:</td><td><input type='number' value={position[selecteditem.current.attrs['id']-1].strokeWidth} onChange={updatestrokewidth}/></td>
+                </tr>
+                
+                
+              </tbody>
+            </table>           
+
+          </div> 
+          <h3>Color</h3>
+            <SketchPicker
+            color={position[selecteditem.current.attrs['id']-1].fill}
+            onChangeComplete={updatecolor}
+            />
+
+          </div>
+
+        } */}
         
 
       </div>
